@@ -115,8 +115,10 @@ func ParseOut() {
 	now := time.Now()
 	if OutFile == "" {
 		Domain = strings.ReplaceAll(Domain, ":", "_")
-		Domain=Domain[:strings.Index(Domain,"/")]
+		Domain = Domain[:strings.Index(Domain, "/")]
 		OutFile = fmt.Sprintf("%s/_%d_%02d_%02d_%02d-%02d-%02d.result.txt", Domain, now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute(), now.Second())
 		OutFile = filepath.Join(Pwdpath, "report", OutFile)
 	}
+	//创建对应文件夹
+	os.MkdirAll("report/"+Domain, 0755)
 }

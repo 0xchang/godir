@@ -47,6 +47,7 @@ func DoRequest(url string, uri string) {
 	}
 	bodylen := len(body)
 	result_fmt := fmt.Sprintf(format_str, now.Hour(), now.Minute(), now.Second(), status_code, Lenout(bodylen), req.URL.RequestURI())
+	go strToFile(result_fmt)
 	common.Glock.Lock()
 	if status_code < 300 {
 		common.Col200.Printf(result_fmt)
