@@ -88,7 +88,21 @@ func ParseThreadNum() {
 	}
 }
 
-func ParseUserFile() {
+func ParseUrlFile() {
+	file, err := os.Open(UrlFile)
+	if err != nil {
+		Colerr.Printf("Open %s Fail!", UrlFile)
+		os.Exit(1)
+	}
+	UrlNum = 0
+	r := bufio.NewScanner(file)
+
+	for r.Scan() {
+		if r.Text() != "" {
+			UrlNum++
+			Urls = append(Urls, r.Text())
+		}
+	}
 
 }
 
@@ -98,27 +112,37 @@ func ParseUrl() {
 		Colerr.Println("Url is none")
 		Colban.Println("use --help or -h for help")
 		os.Exit(1)
-	}
-	firin := strings.Index(Url, "://")
-	if !strings.HasSuffix(Url, "/") {
-		Url += "/"
-	}
-	if firin == -1 {
-		Domain = Url
-		Url = "http://" + Url
+	} else if Url != "" {
+		Urls = strings.Split(Url, ",")
+		for key, value := range Urls {
+			UrlNum++
+			firin := strings.Index(value, "://")
+			if !strings.HasSuffix(value, "/") {
+				value += "/"
+			}
+			if firin == -1 {
+				Domain = value
+				value = "http://" + value
+			} else {
+				Domain = value[firin+3:]
+			}
+			Urls[key] = value
+		}
 	} else {
-		Domain = Url[firin+3:]
+		ParseUrlFile()
 	}
 }
 
 func ParseOut() {
 	now := time.Now()
-	if OutFile == "" {
+	os.Mkdir("report", 0755)
+	if OutFile == "" && UrlFile == "" {
 		Domain = strings.ReplaceAll(Domain, ":", "_")
 		Domain = Domain[:strings.Index(Domain, "/")]
 		OutFile = fmt.Sprintf("%s/_%d_%02d_%02d_%02d-%02d-%02d.result.txt", Domain, now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute(), now.Second())
 		OutFile = filepath.Join(Pwdpath, "report", OutFile)
+		os.Mkdir("report/"+Domain, 0755) //创建对应文件夹
+	} else if OutFile == "" {
+		OutFile = filepath.Join(Pwdpath, "report", fmt.Sprintf("%s.result.txt", UrlFile))
 	}
-	//创建对应文件夹
-	os.MkdirAll("report/"+Domain, 0755)
 }

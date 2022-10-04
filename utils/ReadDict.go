@@ -28,7 +28,6 @@ func ReadFromFile() {
 		}
 		DictValue <- scan.Text()
 	}
-	close(DictValue)
 }
 
 func ReadFromChan() string {

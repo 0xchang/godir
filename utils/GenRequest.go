@@ -18,7 +18,11 @@ func GenRequest(url string) *http.Request {
 		fmt.Println("\r url is ", url)
 		panic("here")
 	}
-	req.Header.Add("User-Agent", Random_UA())
+	if common.UA == "" {
+		req.Header.Add("User-Agent", Random_UA())
+	} else {
+		req.Header.Add("User-Agent", common.UA)
+	}
 	req.Header.Set("Accept", "*/*")
 	req.Header.Set("Accept-Language", "zh-CN,zh;q=0.9")
 	return req

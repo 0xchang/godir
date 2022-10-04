@@ -10,17 +10,19 @@ var Version = "0.0.1" //版本号
 var Glock sync.Mutex
 
 var (
-	Url       string //要扫描的网址
-	Extention string //扩展后缀
-	UA        string //User-Agent
-	OutFile   string //输出文件
-	UrlFile   string //扫描网址文件
-	WordList  string //字典文件
-	ThreadNum int    //线程数量
-	FileLine  uint32 //字典文件行数
-	ReqMethod string //设置扫描使用的方法
-	ExtGroup  []string
-	Timeout   int
+	Url       string   //要扫描的网址
+	Extention string   //扩展后缀
+	UA        string   //User-Agent
+	OutFile   string   //输出文件
+	UrlFile   string   //扫描网址文件
+	WordList  string   //字典文件
+	ThreadNum int      //线程数量
+	FileLine  uint32   //字典文件行数
+	ReqMethod string   //设置扫描使用的方法
+	ExtGroup  []string //扩展名数组
+	Timeout   int      //Timeout时间
+	UrlNum    uint16   //Url数量
+	Urls      []string //Url数组
 )
 
 var (

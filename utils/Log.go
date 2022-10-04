@@ -4,11 +4,14 @@ import (
 	"fmt"
 	"godir/common"
 	"os"
+	"sync"
 )
+
+var flock sync.Mutex
 
 func strToFile(res string) {
 	var text = []byte(res)
-	common.Glock.Lock()
+	flock.Lock()
 	fl, err := os.OpenFile(common.OutFile, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
 		fmt.Printf("Open %s error, %v\n", common.OutFile, err)
@@ -19,5 +22,5 @@ func strToFile(res string) {
 	if err != nil {
 		fmt.Printf("Write %s error, %v\n", common.OutFile, err)
 	}
-	common.Glock.Unlock()
+	flock.Unlock()
 }

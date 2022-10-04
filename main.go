@@ -10,14 +10,18 @@ import (
 func main() {
 	common.Flag()
 	common.Parse()
-
-	bar := utils.NewBarOption(0, common.FileLine) //任务条
-	lim := utils.NewLimit(common.ThreadNum)       //线程数
-
-	go utils.ReadFromFile()
-	for i := 0; i < int(bar.GetTotal()); i++ {
-		lim.Add()
-		go utils.ScanTask(lim, bar)
+	lim := utils.NewLimit(common.ThreadNum) //线程数
+	var bar *utils.Bar
+	for _, value := range common.Urls {
+		bar = utils.NewBarOption(0, common.FileLine) //任务条
+		go utils.ReadFromFile()
+		common.Url = value
+		common.Colban.Printf("\nUrl: %s                                  \n", value)
+		for i := 0; i < int(bar.GetTotal()); i++ {
+			lim.Add()
+			go utils.ScanTask(lim, bar)
+		}
+		lim.Wait()
 	}
 	lim.Wait()
 	bar.Finish()
