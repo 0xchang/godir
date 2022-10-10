@@ -28,6 +28,20 @@ func GenRequest(url string) *http.Request {
 	return req
 }
 
+func status_to_term(out string, code int) {
+	if code < 300 {
+		common.Col200.Printf(out)
+	} else if code < 400 {
+		common.Col30x.Printf(out)
+	} else if code == 403 {
+		common.Col40x.Printf(out)
+	} else if code < 500 {
+		//common.Col40x.Printf(out)
+	} else {
+		common.Col50x.Printf(out)
+	}
+}
+
 func DoRequest(url string, uri string) {
 	client := http.Client{
 		Timeout: time.Duration(common.Timeout) * time.Second,
@@ -53,17 +67,7 @@ func DoRequest(url string, uri string) {
 	result_fmt := fmt.Sprintf(format_str, now.Hour(), now.Minute(), now.Second(), status_code, Lenout(bodylen), req.URL.RequestURI())
 	go strToFile(result_fmt)
 	common.Glock.Lock()
-	if status_code < 300 {
-		common.Col200.Printf(result_fmt)
-	} else if status_code < 400 {
-		common.Col30x.Printf(result_fmt)
-	} else if status_code == 403 {
-		common.Col40x.Printf(result_fmt)
-	} else if status_code < 500 {
-		//common.Col40x.Printf(result_fmt)
-	} else {
-		common.Col50x.Printf(result_fmt)
-	}
+	status_to_term(result_fmt, status_code)
 	common.Glock.Unlock()
 }
 
